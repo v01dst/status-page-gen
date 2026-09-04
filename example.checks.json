@@ -1,0 +1,5 @@
+[
+  { "site": "API", "status": "up", "latencyMs": 120, "checkedAt": "2026-09-04T08:00:00.000Z" },
+  { "site": "API", "status": "up", "latencyMs": 95, "checkedAt": "2026-09-04T20:00:00.000Z" },
+  { "site": "Dashboard", "status": "down", "latencyMs": null, "checkedAt": "2026-09-04T08:00:00.000Z" }
+]

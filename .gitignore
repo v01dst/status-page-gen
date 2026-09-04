@@ -1,0 +1,6 @@
+__pycache__/
+node_modules/
+*.log
+.env
+status.html
+checks.json

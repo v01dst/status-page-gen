@@ -1,0 +1,8 @@
+{
+  "title": "My Services",
+  "checksPath": "checks.json",
+  "sites": [
+    { "name": "API", "url": "https://api.example.com" },
+    { "name": "Dashboard", "url": "https://app.example.com" }
+  ]
+}
