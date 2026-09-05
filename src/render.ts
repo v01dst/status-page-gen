@@ -57,7 +57,7 @@ export function summarize(
   const p95LatencyMs = p95Idx >= 0 ? latencies[p95Idx] ?? null : null;
 
   const byDay = new Map<string, SiteDay>();
-  for (const c of mine) {
+  for (const c of recent) {
     const date = c.checkedAt.slice(0, 10);
     const day = byDay.get(date) ?? { date, up: 0, down: 0 };
     if (c.status === "up") day.up++;
