@@ -114,6 +114,7 @@ describe("windowDays", () => {
     const s90 = summarize(site, checks, now, 90);
     const s7 = summarize(site, checks, now, 7);
     expect(s90.uptime90).toBe(75);
+    expect(s90.days).toHaveLength(4);
     expect(s7.uptime90).toBe(100);
     expect(s7.days).toHaveLength(3);
   });
