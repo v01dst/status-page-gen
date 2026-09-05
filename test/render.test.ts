@@ -106,7 +106,7 @@ describe("windowDays", () => {
   it("honors a custom window for uptime", () => {
     const now = new Date("2026-09-04T12:00:00Z");
     const checks = [
-      check("down", "2026-01-01"),
+      check("down", "2026-07-01"),
       check("up", "2026-09-01"),
       check("up", "2026-09-02"),
       check("up", "2026-09-03"),
