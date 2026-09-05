@@ -41,12 +41,15 @@ function main(): number {
   const args = process.argv.slice(2);
   let configPath = "status.config.json";
   let outPath = "status.html";
+  let days = 90;
 
   for (let i = 0; i < args.length; i++) {
     if ((args[i] === "-c" || args[i] === "--config") && args[i + 1]) {
       configPath = args[++i]!;
     } else if ((args[i] === "-o" || args[i] === "--out") && args[i + 1]) {
       outPath = args[++i]!;
+    } else if ((args[i] === "-d" || args[i] === "--days") && args[i + 1]) {
+      days = Math.max(1, Math.min(365, Number(args[++i]) || 90));
     } else if (args[i] === "-h" || args[i] === "--help") {
       console.log(
         "status-page-gen [-c CONFIG] [-o OUT.html]\n\nCONFIG: { title, checksPath, sites: [{ name, url }] }\nCHECKS: [{ site, status: 'up'|'down', latencyMs, checkedAt }]\n"
@@ -59,10 +62,11 @@ function main(): number {
     const config = loadConfig(configPath);
     const checks = loadChecks(config.checksPath);
     const now = new Date();
-    const summaries = config.sites.map((s) => summarize(s, checks, now));
+    const summaries = config.sites.map((s) => summarize(s, checks, now, days));
     const html = renderPage(summaries, {
       title: config.title ?? "Service Status",
       generatedAt: now,
+      windowDays: days,
     });
     writeFileSync(outPath, html);
     console.log(`wrote ${outPath} (${config.sites.length} sites, ${checks.length} checks)`);

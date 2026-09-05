@@ -101,3 +101,26 @@ describe("renderPage", () => {
     expect(html).toContain("no checks recorded yet");
   });
 });
+
+describe("windowDays", () => {
+  it("honors a custom window for uptime", () => {
+    const now = new Date("2026-09-04T12:00:00Z");
+    const checks = [
+      check("down", "2026-01-01"),
+      check("up", "2026-09-01"),
+      check("up", "2026-09-02"),
+      check("up", "2026-09-03"),
+    ];
+    const s90 = summarize(site, checks, now, 90);
+    const s7 = summarize(site, checks, now, 7);
+    expect(s90.uptime90).toBe(75);
+    expect(s7.uptime90).toBe(100);
+    expect(s7.days).toHaveLength(3);
+  });
+
+  it("renders the window label in the meta line", () => {
+    const s = summarize(site, [check("up", "2026-09-01")]);
+    const html = renderPage([s], { title: "S", generatedAt: new Date(), windowDays: 30 });
+    expect(html).toContain("30-day uptime");
+  });
+});

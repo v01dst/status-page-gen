@@ -31,7 +31,8 @@ export interface SiteSummary {
 export function summarize(
   site: SiteConfig,
   checks: CheckRecord[],
-  now: Date = new Date()
+  now: Date = new Date(),
+  windowDays: number = 90
 ): SiteSummary {
   const mine = checks
     .filter((c) => c.site === site.name)
@@ -39,7 +40,7 @@ export function summarize(
 
   const current = mine[mine.length - 1];
 
-  const cutoff = new Date(now.getTime() - 90 * 86400_000).toISOString();
+  const cutoff = new Date(now.getTime() - windowDays * 86400_000).toISOString();
   const recent = mine.filter((c) => c.checkedAt >= cutoff);
   const ups = recent.filter((c) => c.status === "up").length;
   const uptime90 = recent.length > 0 ? round2((100 * ups) / recent.length) : null;
@@ -63,7 +64,9 @@ export function summarize(
     else day.down++;
     byDay.set(date, day);
   }
-  const days = [...byDay.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-90);
+  const days = [...byDay.values()]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(-windowDays);
 
   const incidents = days
     .filter((d) => d.down > 0)
@@ -97,7 +100,7 @@ function escapeHtml(s: string): string {
 
 export function renderPage(
   summaries: SiteSummary[],
-  opts: { title: string; generatedAt: Date }
+  opts: { title: string; generatedAt: Date; windowDays?: number }
 ): string {
   const sites = summaries
     .map((s) => {
@@ -125,13 +128,14 @@ export function renderPage(
       return `<section class="site">
   <div class="site-head">
     <h2><a href="${escapeHtml(s.url)}" rel="noopener">${escapeHtml(s.name)}</a> ${badge}</h2>
-    <span class="meta">90-day uptime <strong>${uptime}</strong> · p95 ${latency} · ${incidentNote}</span>
+    <span class="meta">${windowDays}-day uptime <strong>${uptime}</strong> · p95 ${latency} · ${incidentNote}</span>
   </div>
   <div class="bars">${bars || '<span class="meta">no checks recorded yet</span>'}</div>
 </section>`;
     })
     .join("\n");
 
+  const windowDays = opts.windowDays ?? 90;
   const allUp = summaries.length > 0 && summaries.every((s) => s.currentStatus === "up");
   const banner = allUp
     ? '<div class="banner all-up">All systems operational</div>'
