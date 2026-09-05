@@ -102,6 +102,7 @@ export function renderPage(
   summaries: SiteSummary[],
   opts: { title: string; generatedAt: Date; windowDays?: number }
 ): string {
+  const windowDays = opts.windowDays ?? 90;
   const sites = summaries
     .map((s) => {
       const badge =
@@ -135,7 +136,6 @@ export function renderPage(
     })
     .join("\n");
 
-  const windowDays = opts.windowDays ?? 90;
   const allUp = summaries.length > 0 && summaries.every((s) => s.currentStatus === "up");
   const banner = allUp
     ? '<div class="banner all-up">All systems operational</div>'
